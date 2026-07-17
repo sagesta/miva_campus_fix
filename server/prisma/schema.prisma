@@ -1,0 +1,88 @@
+// CampusFix — Prisma schema (MVP core slice, SQLite).
+// SQLite does not support native enums, so status/priority/role/userType
+// are stored as validated Strings. Constants live in src/utils/constants.js.
+// The schema is otherwise portable to PostgreSQL (swap provider + add enums).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique // REQUESTER | OFFICER | ADMIN
+  users User[]
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  fullName      String
+  email         String   @unique
+  passwordHash  String
+  phone         String?
+  userType      String?  // STUDENT | STAFF (requesters)
+  department    String?
+  isActive      Boolean  @default(true)
+  role          Role     @relation(fields: [roleId], references: [id])
+  roleId        Int
+  requests      ServiceRequest[] @relation("Requester")
+  assignments   Assignment[]     @relation("Officer")
+  statusUpdates StatusUpdate[]
+  createdAt     DateTime @default(now())
+}
+
+model RequestCategory {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  requests    ServiceRequest[]
+}
+
+model ServiceRequest {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String
+  location      String
+  priority      String   @default("MEDIUM") // LOW | MEDIUM | HIGH | URGENT
+  status        String   @default("PENDING") // see constants.js
+  requester     User     @relation("Requester", fields: [requesterId], references: [id])
+  requesterId   Int
+  category      RequestCategory @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  assignments   Assignment[]
+  statusUpdates StatusUpdate[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([requesterId])
+}
+
+model Assignment {
+  id           Int      @id @default(autoincrement())
+  request      ServiceRequest @relation(fields: [requestId], references: [id])
+  requestId    Int
+  officer      User     @relation("Officer", fields: [officerId], references: [id])
+  officerId    Int
+  assignedById Int
+  note         String?
+  isActive     Boolean  @default(true)
+  assignedAt   DateTime @default(now())
+}
+
+model StatusUpdate {
+  id          Int      @id @default(autoincrement())
+  request     ServiceRequest @relation(fields: [requestId], references: [id])
+  requestId   Int
+  updatedBy   User     @relation(fields: [updatedById], references: [id])
+  updatedById Int
+  oldStatus   String
+  newStatus   String
+  comment     String?
+  createdAt   DateTime @default(now())
+}
