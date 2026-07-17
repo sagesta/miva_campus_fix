@@ -32,12 +32,12 @@ The university currently receives maintenance complaints manually through phone 
 
 ## 6. Architecture Diagram
 
-![Architecture Diagram](./assets/architecture.png)
+![Architecture Diagram](https://mermaid.ink/img/Z3JhcGggVEQKICAgIENsaWVudFtSZWFjdCBGcm9udGVuZFxuVml0ZSArIFRhaWx3aW5kICsgUmVhY3QgUXVlcnldIC0tPnxSRVNUIEFQSSB2aWEgTmdpbnggUHJveHl8IEFQSVtFeHByZXNzIEJhY2tlbmQgQVBJXQogICAgQVBJIC0tPnxQcmlzbWEgT1JNfCBEQlsoU1FMaXRlIFBlcnNpc3RlbnQgVm9sdW1lKV0KICAgIEFQSSAtLT4gQXV0aFtKV1QgQXV0aGVudGljYXRpb24gJiBSQkFDXQogICAgCiAgICBzdWJncmFwaCBDb250YWluZXJpemVkIERlcGxveW1lbnQKICAgICAgTmdpbnhbTmdpbnggV2ViIFNlcnZlcl0KICAgICAgRXhwcmVzc1tOb2RlLmpzIFNlcnZlcl0KICAgIGVuZA==)
 
 ## 7. The Database and Relationships (Deep Dive)
 We use **SQLite** (via Prisma ORM), which supports relational integrity and provides a portable file-based database ideal for this MVP. 
 
-![Entity-Relationship Diagram](./assets/er_diagram.png)
+![Entity-Relationship Diagram](https://mermaid.ink/img/ZXJEaWFncmFtCiAgICBVc2VyIHx8LS1veyBTZXJ2aWNlUmVxdWVzdCA6ICJzdWJtaXRzIgogICAgUm9sZSB8fC0tb3sgVXNlciA6ICJiZWxvbmdzIHRvIgogICAgUmVxdWVzdENhdGVnb3J5IHx8LS1veyBTZXJ2aWNlUmVxdWVzdCA6ICJjYXRlZ29yaXplcyIKICAgIFNlcnZpY2VSZXF1ZXN0IHx8LS1veyBBc3NpZ25tZW50IDogImhhcyIKICAgIFVzZXIgfHwtLW97IEFzc2lnbm1lbnQgOiAiaXMgYXNzaWduZWQiCiAgICBTZXJ2aWNlUmVxdWVzdCB8fC0tb3sgU3RhdHVzVXBkYXRlIDogImhhcyB0aW1lbGluZSBvZiIKICAgIFVzZXIgfHwtLW97IFN0YXR1c1VwZGF0ZSA6ICJhdXRob3Igb2YiCgogICAgVXNlciB7CiAgICAgICAgaW50IGlkIFBLCiAgICAgICAgc3RyaW5nIGVtYWlsCiAgICAgICAgc3RyaW5nIHBhc3N3b3JkSGFzaAogICAgICAgIGludCByb2xlSWQgRksKICAgIH0KICAgIFNlcnZpY2VSZXF1ZXN0IHsKICAgICAgICBpbnQgaWQgUEsKICAgICAgICBzdHJpbmcgdGl0bGUKICAgICAgICBzdHJpbmcgc3RhdHVzCiAgICAgICAgaW50IHJlcXVlc3RlcklkIEZLCiAgICB9)
 
 - **User & Role**: A `User` belongs to one `Role` (REQUESTER, OFFICER, ADMIN). This enforces Role-Based Access Control (RBAC) at the database level.
 - **ServiceRequest**: The core entity. It links to the `User` who created it (`requesterId`) and the `RequestCategory` it falls under.
