@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: campusfix-server
+    env: node
+    buildCommand: "cd server && npm install && npm run prisma:generate"
+    startCommand: "cd server && npm run migrate && npm start"
+    envVars:
+      - key: DATABASE_URL
+        value: file:./prod.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_ORIGIN
+        value: https://campusfix-client.onrender.com
+
+  - type: web
+    name: campusfix-client
+    env: static
+    buildCommand: "cd client && npm install && npm run build"
+    staticPublishPath: "./client/dist"
+    envVars:
+      - key: VITE_API_URL
+        value: https://campusfix-server.onrender.com
