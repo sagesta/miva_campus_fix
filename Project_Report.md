@@ -32,44 +32,12 @@ The university currently receives maintenance complaints manually through phone 
 
 ## 6. Architecture Diagram
 
-```mermaid
-graph TD
-    Client[React Frontend\nVite + Tailwind + React Query] -->|REST API via Nginx Proxy| API[Express Backend API]
-    API -->|Prisma ORM| DB[(SQLite Persistent Volume)]
-    API --> Auth[JWT Authentication & RBAC]
-    
-    subgraph Containerized Deployment
-      Nginx[Nginx Web Server]
-      Express[Node.js Server]
-    end
-```
+![Architecture Diagram](./assets/architecture.png)
 
 ## 7. The Database and Relationships (Deep Dive)
 We use **SQLite** (via Prisma ORM), which supports relational integrity and provides a portable file-based database ideal for this MVP. 
 
-```mermaid
-erDiagram
-    User ||--o{ ServiceRequest : "submits"
-    Role ||--o{ User : "belongs to"
-    RequestCategory ||--o{ ServiceRequest : "categorizes"
-    ServiceRequest ||--o{ Assignment : "has"
-    User ||--o{ Assignment : "is assigned"
-    ServiceRequest ||--o{ StatusUpdate : "has timeline of"
-    User ||--o{ StatusUpdate : "author of"
-
-    User {
-        int id PK
-        string email
-        string passwordHash
-        int roleId FK
-    }
-    ServiceRequest {
-        int id PK
-        string title
-        string status
-        int requesterId FK
-    }
-```
+![Entity-Relationship Diagram](./assets/er_diagram.png)
 
 - **User & Role**: A `User` belongs to one `Role` (REQUESTER, OFFICER, ADMIN). This enforces Role-Based Access Control (RBAC) at the database level.
 - **ServiceRequest**: The core entity. It links to the `User` who created it (`requesterId`) and the `RequestCategory` it falls under.
