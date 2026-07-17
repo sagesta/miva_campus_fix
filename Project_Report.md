@@ -51,16 +51,27 @@ The backend exposes a deeply documented RESTful API using **Swagger UI** (`swagg
 - **Structure**: All routes are annotated using OpenAPI 3.0 JSDoc comments. This includes request bodies, required fields, parameter types, and expected response codes (200, 201, 400, etc.).
 - **Security**: The Swagger UI is configured to accept Bearer tokens (JWT) so that protected endpoints can be tested directly from the documentation interface.
 - **Validation**: API endpoints are guarded by a Zod validation middleware (`validate(schema)`) which ensures that payloads match strict schemas before hitting the controllers. This guarantees data integrity.
+  <img width="1958" height="1183" alt="image" src="https://github.com/user-attachments/assets/2031e504-6e7f-4abd-b2b7-91f9f268ec83" />
+
 
 ## 9. Screenshots of Major Interfaces
-*(Please insert screenshots here before submitting: Login, Dashboard, Request Form, Admin View)*
+<img width="2202" height="1308" alt="image" src="https://github.com/user-attachments/assets/b2d94f92-610b-4c68-be84-ffb059f72ea1" />
+<img width="2119" height="1243" alt="image" src="https://github.com/user-attachments/assets/231dd7e1-d731-4032-9d62-1a01a9568aac" />
+<img width="2053" height="1086" alt="image" src="https://github.com/user-attachments/assets/de28fb64-495b-4336-b645-c2ce1b612db8" />
+<img width="1998" height="978" alt="image" src="https://github.com/user-attachments/assets/37a8c7b6-8b38-40fb-8027-788b59f9b463" />
+
+
+
+
 
 ## 10. Testing Evidence
 Automated testing is implemented for both frontend and backend.
 - **Backend Tests:** Built using Jest and Supertest. Successfully tested registration, login, request creation, and listing.
 - **Frontend Tests:** Built using Vitest and React Testing Library. Successfully tested UI components and Login form rendering.
 
-*(Please insert screenshots of `npm test` passing in terminal)*
+<img width="1429" height="444" alt="image" src="https://github.com/user-attachments/assets/727ed9e5-734b-44bf-ba1e-351629527505" />
+<img width="1439" height="533" alt="image" src="https://github.com/user-attachments/assets/6d87b71b-f87c-4a2d-a925-7beaa71e5bd3" />
+
 
 ## 11. Deployment Information
 The application can be deployed with Docker Compose. The React frontend is built into
@@ -70,8 +81,10 @@ seeds required roles and reference data, and stores the SQLite database in a per
 Docker volume. Run `docker compose up --build -d` and access the local deployment at
 `http://localhost:8080`.
 
+
 The repository also includes `render.yaml` for a Render.com deployment.
-*(Insert the final public deployment link and a screenshot of the live application before submission.)*
+<img width="1767" height="1027" alt="image" src="https://github.com/user-attachments/assets/95f27adb-747b-42e9-8ecc-dbd570a7ee17" />
+https://miva-request.samueladebodun.com/dashboard
 
 ## 12. Challenges Encountered and Solutions
 - **Challenge:** Managing complex state for service requests across different user roles.
