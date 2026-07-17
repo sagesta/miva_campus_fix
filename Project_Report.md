@@ -30,28 +30,71 @@ The university currently receives maintenance complaints manually through phone 
 - JWT (jsonwebtoken) and bcryptjs for authentication
 - Swagger UI Express for API documentation
 
-## 6. The Database and Relationships
-We use **SQLite** (via Prisma ORM), which supports relational integrity.
-- `User` has a one-to-many relationship with `ServiceRequest` (as requester).
-- `Role` has a one-to-many relationship with `User`.
-- `RequestCategory` has a one-to-many relationship with `ServiceRequest`.
-- `Assignment` links `ServiceRequest` and `User` (officer).
-- `StatusUpdate` logs changes to a `ServiceRequest`.
+## 6. Architecture Diagram
 
-## 7. API Documentation
-The API is documented using Swagger. It can be accessed at `/api-docs` when running the backend server locally (`http://localhost:4000/api-docs`).
+```mermaid
+graph TD
+    Client[React Frontend\nVite + Tailwind + React Query] -->|REST API via Nginx Proxy| API[Express Backend API]
+    API -->|Prisma ORM| DB[(SQLite Persistent Volume)]
+    API --> Auth[JWT Authentication & RBAC]
+    
+    subgraph Containerized Deployment
+      Nginx[Nginx Web Server]
+      Express[Node.js Server]
+    end
+```
 
-## 8. Screenshots of Major Interfaces
+## 7. The Database and Relationships (Deep Dive)
+We use **SQLite** (via Prisma ORM), which supports relational integrity and provides a portable file-based database ideal for this MVP. 
+
+```mermaid
+erDiagram
+    User ||--o{ ServiceRequest : "submits"
+    Role ||--o{ User : "belongs to"
+    RequestCategory ||--o{ ServiceRequest : "categorizes"
+    ServiceRequest ||--o{ Assignment : "has"
+    User ||--o{ Assignment : "is assigned"
+    ServiceRequest ||--o{ StatusUpdate : "has timeline of"
+    User ||--o{ StatusUpdate : "author of"
+
+    User {
+        int id PK
+        string email
+        string passwordHash
+        int roleId FK
+    }
+    ServiceRequest {
+        int id PK
+        string title
+        string status
+        int requesterId FK
+    }
+```
+
+- **User & Role**: A `User` belongs to one `Role` (REQUESTER, OFFICER, ADMIN). This enforces Role-Based Access Control (RBAC) at the database level.
+- **ServiceRequest**: The core entity. It links to the `User` who created it (`requesterId`) and the `RequestCategory` it falls under.
+- **Assignment**: A junction table that allows an Admin to assign a `ServiceRequest` to a specific `User` (acting as an Officer).
+- **StatusUpdate**: Acts as an audit log/timeline for a `ServiceRequest`. Whenever the status changes (e.g., PENDING -> IN_PROGRESS), a new record is created linking the request, the user who changed it, and an optional comment.
+
+## 8. API Documentation Depth
+The backend exposes a deeply documented RESTful API using **Swagger UI** (`swagger-ui-express` and `swagger-jsdoc`). 
+
+- **Access**: Available at `/api-docs` (e.g. `http://localhost:8080/api-docs`).
+- **Structure**: All routes are annotated using OpenAPI 3.0 JSDoc comments. This includes request bodies, required fields, parameter types, and expected response codes (200, 201, 400, etc.).
+- **Security**: The Swagger UI is configured to accept Bearer tokens (JWT) so that protected endpoints can be tested directly from the documentation interface.
+- **Validation**: API endpoints are guarded by a Zod validation middleware (`validate(schema)`) which ensures that payloads match strict schemas before hitting the controllers. This guarantees data integrity.
+
+## 9. Screenshots of Major Interfaces
 *(Please insert screenshots here before submitting: Login, Dashboard, Request Form, Admin View)*
 
-## 9. Testing Evidence
+## 10. Testing Evidence
 Automated testing is implemented for both frontend and backend.
 - **Backend Tests:** Built using Jest and Supertest. Successfully tested registration, login, request creation, and listing.
 - **Frontend Tests:** Built using Vitest and React Testing Library. Successfully tested UI components and Login form rendering.
 
 *(Please insert screenshots of `npm test` passing in terminal)*
 
-## 10. Deployment Information
+## 11. Deployment Information
 The application can be deployed with Docker Compose. The React frontend is built into
 an Nginx image, which serves the single-page application and proxies `/api` and
 `/api-docs` to the Express API container. The API applies Prisma migrations at startup,
@@ -62,11 +105,11 @@ Docker volume. Run `docker compose up --build -d` and access the local deploymen
 The repository also includes `render.yaml` for a Render.com deployment.
 *(Insert the final public deployment link and a screenshot of the live application before submission.)*
 
-## 11. Challenges Encountered and Solutions
+## 12. Challenges Encountered and Solutions
 - **Challenge:** Managing complex state for service requests across different user roles.
 - **Solution:** Utilized TanStack Query to cache queries uniquely based on the user's role and search parameters.
 - **Challenge:** Documenting all API endpoints clearly.
 - **Solution:** Implemented `swagger-jsdoc` to generate OpenAPI specs directly from code comments.
 
-## 12. Conclusion
+## 13. Conclusion
 CampusFix successfully addresses the manual inefficiencies in the university's maintenance reporting system by providing a scalable, secure, and user-friendly digital platform.
