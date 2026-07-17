@@ -1,5 +1,8 @@
 FROM node:20-alpine
 
+# Install OpenSSL for Prisma's Rust engines on Alpine
+RUN apk add --no-cache openssl
+
 # Set working directory
 WORKDIR /app
 
@@ -16,5 +19,5 @@ RUN npx prisma generate
 # Expose API port
 EXPOSE 4000
 
-# Start server with migrations
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+# Push schema to postgres and start server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run seed && npm start"]

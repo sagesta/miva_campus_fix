@@ -1,4 +1,17 @@
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: campusfix-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: campusfix
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   backend:
     build:
       context: ./server
@@ -7,12 +20,12 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - DATABASE_URL=file:/app/prisma/prod.db
+      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/campusfix?schema=public
       - JWT_SECRET=super_secret_jwt_key_in_docker
       - PORT=4000
       - CLIENT_ORIGIN=http://localhost:3000
-    volumes:
-      - sqlite_data:/app/prisma
+    depends_on:
+      - db
     restart: unless-stopped
 
   frontend:
@@ -29,4 +42,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  sqlite_data:
+  postgres_data:

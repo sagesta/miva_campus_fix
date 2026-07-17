@@ -1,14 +1,13 @@
-// CampusFix — Prisma schema (MVP core slice, SQLite).
-// SQLite does not support native enums, so status/priority/role/userType
-// are stored as validated Strings. Constants live in src/utils/constants.js.
-// The schema is otherwise portable to PostgreSQL (swap provider + add enums).
+// CampusFix — Prisma schema (MVP core slice, PostgreSQL).
+// The schema uses validated Strings instead of native enums for maximum portability.
+// Constants live in src/utils/constants.js.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
