@@ -11,7 +11,7 @@
     "migrate": "prisma migrate dev",
     "seed": "node prisma/seed.js",
     "db:reset": "prisma migrate reset --force",
-    "test": "cross-env DATABASE_URL=file:./test.db NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
+    "test": "cross-env DATABASE_URL=\"postgresql://postgres:postgrespassword@db:5432/campusfix?schema=test\" npx prisma db push --skip-generate --accept-data-loss && cross-env DATABASE_URL=\"postgresql://postgres:postgrespassword@db:5432/campusfix?schema=test\" NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
