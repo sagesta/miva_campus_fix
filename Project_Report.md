@@ -52,9 +52,15 @@ Automated testing is implemented for both frontend and backend.
 *(Please insert screenshots of `npm test` passing in terminal)*
 
 ## 10. Deployment Information
-The application is configured to be deployed using Render.com via Infrastructure-as-Code (`render.yaml`).
-The backend serves the API and the frontend is built as a static site. 
-*(Replace this with your deployed links once hosted)*
+The application can be deployed with Docker Compose. The React frontend is built into
+an Nginx image, which serves the single-page application and proxies `/api` and
+`/api-docs` to the Express API container. The API applies Prisma migrations at startup,
+seeds required roles and reference data, and stores the SQLite database in a persistent
+Docker volume. Run `docker compose up --build -d` and access the local deployment at
+`http://localhost:8080`.
+
+The repository also includes `render.yaml` for a Render.com deployment.
+*(Insert the final public deployment link and a screenshot of the live application before submission.)*
 
 ## 11. Challenges Encountered and Solutions
 - **Challenge:** Managing complex state for service requests across different user roles.

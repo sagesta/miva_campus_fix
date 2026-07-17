@@ -58,6 +58,32 @@ npm run dev                     # http://localhost:5173
 
 Open http://localhost:5173 and sign in with a demo account.
 
+## Docker Compose deployment
+
+The container setup runs the React application behind Nginx and proxies API traffic
+to the Express container. SQLite data is stored in the named `campusfix_data` volume,
+so requests and users survive container restarts and image rebuilds.
+
+```bash
+docker compose up --build -d
+```
+
+Open:
+
+- Application: `http://localhost:8080`
+- Swagger API documentation: `http://localhost:8080/api-docs`
+- API health check: `http://localhost:8080/api/health`
+
+The API container automatically applies committed Prisma migrations and safely runs
+the idempotent seed script before starting. Stop the application with
+`docker compose down`. This keeps the database volume. Use
+`docker compose down -v` only when you intentionally want to delete all application data.
+
+For a non-local deployment, copy `.env.docker.example` to `.env`, set a strong
+`JWT_SECRET`, set `CLIENT_ORIGIN` to the public application URL, and optionally change
+`APP_PORT`. Keep `VITE_API_URL=/api` when the web and API containers use the supplied
+Nginx proxy.
+
 ## Demo accounts
 
 All use password **`password123`** (click the buttons on the login page to autofill):
